@@ -24,3 +24,8 @@ El pipeline de entrenamiento es el siguiente:
 * Predicción:
 * Cargamos la imagen a predecir con opencv y pasamos a detectar el rostro para luego recortar la imagen.
 * Instanciamos el modelo con los pesos entrenados y pasamos a predecir la imagen recortada.
+
+## Deployment
+
+Para deployar de forma local la app dirigirse al directorio "deployment" y ejecutar app.py (uvicorn app:app --reload).
+
