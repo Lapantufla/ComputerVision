@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Image for Age Prediction</title>
+</head>
+<body>
+    <h1>Predecir Edad</h1>
+
+    <input type="file" id="fileInput" name="file" accept="image/*" onchange="mostrarImagenSeleccionada(event)">
+    
+    <br/>
+    <br/>
+
+    <button id="predictButton" onclick="realizarPrediccion()" style="display: none;">Hacer predicción de edad</button>
+
+    <img id="uploadedImage" style="max-width: 500px; max-height: 500px; display: none;"/>
+    <div id="predictionResult"></div>
+
+    <script>
+    function mostrarImagenSeleccionada(event) {
+        var image = document.getElementById('uploadedImage');
+        var predictionResult = document.getElementById('predictionResult');
+        var predictButton = document.getElementById('predictButton');
+        
+        // Borrar la predicción anterior y ocultar la imagen
+        predictionResult.innerText = '';
+        image.style.display = 'none';
+        
+        var file = event.target.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                image.src = e.target.result;
+                image.style.display = 'block';
+                // Mostrar el botón de predicción
+                predictButton.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            // Ocultar el botón de predicción si no hay archivo
+            predictButton.style.display = 'none';
+        }
+    }
+
+    function realizarPrediccion() {
+        var fileInput = document.getElementById('fileInput');
+        var formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+        var predictionResult = document.getElementById('predictionResult');
+
+        fetch('/make_prediction/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if ('error' in data) {
+                predictionResult.innerText = 'Error: ' + data.error;
+            } else {
+                predictionResult.innerText = 'Predicción: ' + data.prediction;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    </script>
+</body>
+</html>
+
+
